@@ -12,28 +12,36 @@ import com.university.project.entities.Student;
 import com.university.project.exceptions.GeneralException;
 import com.university.project.repository.StudentRepository;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+
 @Service
+@RequiredArgsConstructor
+@Log4j2
 public class StudentService {
 
 	private final StudentRepository repository;
 
-	public StudentService(StudentRepository repository) {
-		this.repository = repository;
-	}
-
 	public GenericResponse registerNewStudentIntoUniversity(StudentRequestDTO request) {
-		repository.save(new Student(request.getUsername(), request.getName(), request.getTypeOfGraduation(),
-				request.getBirthDate()));
+		Optional.ofNullable(repository.findByUsername(request.getUsername())).ifPresentOrElse(student ->{
+			log.error("Student already exist");
+			throw new GeneralException("Student already exist", HttpStatus.CONFLICT);
+		}, () -> {
+			log.info("Creating students . . .");
+			repository.save(new Student(request.getUsername(), request.getName(), request.getTypeOfGraduation(),
+					request.getBirthDate()));
+			log.info("Student Created!");
+		});
 		return new GenericResponse("Student Created!", 201);
 	}
 
 	public List<Student> listAllStudents() {
 		return repository.findAll();
 	}
-	
-	
+
 	public Student getStudentById(String id) {
-		return repository.findById(id).orElseThrow(() -> new GeneralException("Student Does Not Exist", HttpStatus.NOT_FOUND));
+		return repository.findById(id)
+				.orElseThrow(() -> new GeneralException("Student Does Not Exist", HttpStatus.NOT_FOUND));
 	}
 
 }
