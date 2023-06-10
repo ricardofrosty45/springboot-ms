@@ -10,72 +10,34 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+
+@Setter
+@Getter
+@RequiredArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 @Table(name = "student")
 public class Student {
 
 	@Id
+	@EqualsAndHashCode.Include
 	@GeneratedValue(generator = "UUID")
 	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-	@Column(name = "id", updatable = false, nullable = false)
+	@Column(name = "id", updatable = false, nullable = false, unique = true)
 	private String id;
 	@Column(name = "user_name", updatable = true, nullable = false)
 	private String username;
+	@Column(name = "password", updatable = true, nullable = false)
+	private String password;
 	@Column(name = "student_name", updatable = true, nullable = false)
 	private String name;
 	@Column(name = "type_of_graduation", updatable = true, nullable = false)
 	private String typeOfGraduation;
 	@Column(name = "birth_date", updatable = true, nullable = false)
 	private Date birthDate;
-
-	public Student() {
-	}
-
-	public Student(String username, String name, String typeOfGraduation, Date birthDate) {
-		this.username = username;
-		this.name = name;
-		this.typeOfGraduation = typeOfGraduation;
-		this.birthDate = birthDate;
-	}
-
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getTypeOfGraduation() {
-		return typeOfGraduation;
-	}
-
-	public void setTypeOfGraduation(String typeOfGraduation) {
-		this.typeOfGraduation = typeOfGraduation;
-	}
-
-	public Date getBirthDate() {
-		return birthDate;
-	}
-
-	public void setBirthDate(Date birthDate) {
-		this.birthDate = birthDate;
-	}
-
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
 
 }

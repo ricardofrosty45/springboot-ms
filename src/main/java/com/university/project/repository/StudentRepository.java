@@ -7,5 +7,8 @@ import com.university.project.entities.Student;
 
 
 public interface StudentRepository extends JpaRepository<Student, String>{
+	
 	Student findByUsername(@Param("user_name")String username);
+	
+	
 }

@@ -2,6 +2,7 @@ package com.university.project.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -20,12 +21,12 @@ public class SecurityConfig {
 
 	@Bean
 	protected SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		http.authorizeHttpRequests((requests) -> requests.antMatchers("/api/v1/student").permitAll().and()
-				.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class));
-		
-		http.csrf().disable();
-		
-		return http.build();
+		return http.authorizeHttpRequests((requests) -> requests
+				.antMatchers(HttpMethod.POST,"/api/v1/login").permitAll()
+				.antMatchers(HttpMethod.POST,"/api/v1/student").permitAll()
+				.and()
+				.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class))
+				.formLogin((formLogin) -> formLogin.disable()).csrf((csrf) -> csrf.disable()).build();
 	}
 
 }
