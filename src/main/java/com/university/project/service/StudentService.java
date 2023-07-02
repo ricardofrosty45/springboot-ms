@@ -9,9 +9,10 @@ import org.springframework.stereotype.Service;
 
 import com.university.project.dto.request.StudentRequestDTO;
 import com.university.project.dto.response.GenericResponse;
-import com.university.project.entities.Student;
+import com.university.project.entities.SystemUser;
+import com.university.project.enums.Roles;
 import com.university.project.exceptions.GeneralException;
-import com.university.project.repository.StudentRepository;
+import com.university.project.repository.SystemUserRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -21,7 +22,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class StudentService {
 
-	private final StudentRepository repository;
+	private final SystemUserRepository repository;
 
 	public GenericResponse registerNewStudentIntoUniversity(StudentRequestDTO request) {
 		Optional.ofNullable(repository.findByUsername(request.getUsername())).ifPresentOrElse(student -> {
@@ -29,7 +30,8 @@ public class StudentService {
 			throw new GeneralException("Student already exist", HttpStatus.CONFLICT);
 		}, () -> {
 			log.info("Creating students . . .");
-			Student entity = new Student();
+			SystemUser entity = new SystemUser();
+			entity.setUserRole(Roles.STUDENT);
 			BeanUtils.copyProperties(request, entity);
 			repository.save(entity);
 			log.info("Student Created!");
@@ -37,11 +39,11 @@ public class StudentService {
 		return new GenericResponse("Student Created!", 201);
 	}
 
-	public List<Student> listAllStudents() {
+	public List<SystemUser> listAllStudents() {
 		return repository.findAll();
 	}
 
-	public Student getStudentById(String id) {
+	public SystemUser getStudentById(String id) {
 		return repository.findById(id)
 				.orElseThrow(() -> new GeneralException("Student Does Not Exist", HttpStatus.NOT_FOUND));
 	}

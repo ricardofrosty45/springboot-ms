@@ -5,6 +5,7 @@ import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,6 +35,12 @@ public class StudentController {
 	@PutMapping
 	public ResponseEntity<GenericResponse> updateStudentProfile(@RequestBody @Valid UpdateStudentRequestDTO request){
 		return new ResponseEntity<>(null, HttpStatus.OK);
+	}
+	
+	@GetMapping
+	@Secured("ROLE_STUDENT")
+	public ResponseEntity<String> testRole(){
+		return new ResponseEntity<>("I'm in!", HttpStatus.OK);
 	}
 
 }

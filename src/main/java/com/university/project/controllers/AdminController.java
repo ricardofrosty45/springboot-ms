@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.university.project.entities.Student;
+import com.university.project.entities.SystemUser;
 import com.university.project.service.StudentService;
 
 import lombok.RequiredArgsConstructor;
@@ -29,13 +29,13 @@ public class AdminController {
 	
 	@GetMapping
 	@Secured("ROLE_ADMIN")
-	public ResponseEntity<List<Student>> getAllCreatedStudents() throws Exception {
+	public ResponseEntity<List<SystemUser>> getAllCreatedStudents() throws Exception {
 		return new ResponseEntity<>(service.listAllStudents(), HttpStatus.OK);
 	}
 
 	@GetMapping("/information")
 	@Secured("ROLE_ADMIN")
-	public ResponseEntity<Student> getStudentById(@NotNull(message = "id cannot be null") @NotBlank(message = "id cannot be empty, please inform us a valid id")@RequestParam("id") String id) throws Exception {
+	public ResponseEntity<SystemUser> getStudentById(@NotNull(message = "id cannot be null") @NotBlank(message = "id cannot be empty, please inform us a valid id")@RequestParam("id") String id) throws Exception {
 		return new ResponseEntity<>(service.getStudentById(id), HttpStatus.OK);
 	}
 

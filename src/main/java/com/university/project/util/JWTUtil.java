@@ -8,6 +8,7 @@ import java.util.Date;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
+import com.university.project.enums.Roles;
 import com.university.project.exceptions.GeneralException;
 
 import io.jsonwebtoken.ExpiredJwtException;
@@ -20,11 +21,11 @@ import io.jsonwebtoken.security.Keys;
 @Component
 public class JWTUtil {
 
-	public String generateJwtToken(String username, String secret, long expiration) {
+	public String generateJwtToken(String username, String secret, long expiration, Roles userRole) {
 
 		Date dateNow = Date.from(LocalDateTime.now().plusHours(5).atZone(ZoneId.systemDefault()).toInstant());
 		return Jwts.builder().setSubject(username).setIssuedAt(new Date()).setExpiration(dateNow)
-				.signWith(this.key(secret), SignatureAlgorithm.HS256).compact();
+				.claim("ROLE", userRole.toString()).signWith(this.key(secret), SignatureAlgorithm.HS256).compact();
 
 	}
 
@@ -32,7 +33,7 @@ public class JWTUtil {
 		return Keys.hmacShaKeyFor(secret.getBytes());
 	}
 
-	private boolean validateJwtToken(String token) {
+	public boolean validateJwtToken(String token) {
 		try {
 			Jwts.parserBuilder().setSigningKey(this.key(token)).build().parse(token);
 			return true;
